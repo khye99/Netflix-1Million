@@ -1,0 +1,75 @@
+-Readme-
+
+
+For this part, 00000-00011 are results from the collaborative filtering program. 00011(19) and 00011(20) are MAE and RMSE results.
+
+-In the report-
+
+Due to the effectiveness of the code during the first attempts, the cloud developer decided to follow the code given by a local developer. 
+
+To implement the cloud execution approach, AWS(Amazon Web Services) accounts were set up and the following technologies were used:
+
+1) Amazon Elastic Compute 2(EC2) that allows program execution:
+
+2) Elastic Map Reduce(EMR), a type of Hadoop Cluster;
+
+3) S3 Bucket, static file storage.
+
+4) Amazon Machine Imaging(AMI), component for providing vital information to instance.
+
+Please note that we are using free-tier machines. This might cause slower execution.
+
+To set up the Elastic MapReduce, the following steps are taken:
+
+0. Setting up an EC2 instance by selecting an AMI as a virtual machine.
+
+1. Setting up an S3 bucket with input directories and file logs directory.
+
+2. Launch the cluster by specifying Spark under Software Configuration and EC2 key pair under Security and Access.
+
+3. Submit jobs by clicking "add step" and give application location and arguments. 
+
+4.Test on a small amount of data, and then on larger sizes. Repeat this step until an excellent result is achieved.
+
+
+4. Shut down the cluster when finished.
+
+Before the cloud execution started, assumptions on factors that might influence runtime and final results have been made. Early assumptions centered on several variables: the amount of training data and testing data, and k-value.
+
+To look at how different k and choice of data would influence our result, different accounts/clusters were set up and the test was run in parallel. 
+
+The total execution time largely depends on the amount of training and testing data. However, the runtime and amount of data are not linear; for example, when running 0.1 training, it took about 90 minutes on a cluster with 1 master and 6 core nodes, but for running 0.2, it took significantly longer.
+
+Moreover, the testing data seems to be the more dominant factor for execution time than training data. 
+
+According to our results, running the whole training data set takes forever. Thus, to yield results, we have to use the following approaches so that we could minimize possible errors:
+
+1) Adding more node in the cluster; this would improve execution speed for a limited percentage.
+
+2) Running partially on the TestingRatings/TrainingRatings. Runtime listed below:
+
+Both full didn't finish. Thus, we choose to use subsets of data sets with sample() function.
+
+Also, due to early experiments that took us a long time, the need to improve running time is prioritized. Thus, the number of instances was doubled for some experiments, and the number of training and testing data was reduced.
+
+
+
+Here are the results from the cluster with 1 master and 6 core nodes:
+When running on full training with 0.001 Test, it usually ends in minutes.
+Full Test, 0.1 Train, 1 hour 25 minutes.
+
+
+The value k seems to give little influence on the execution time. When k gets larger, MAE and RMSE tend to both decrease. Different values of k are tested, ranging from 30 to 10000. When k is changed from 50 to 100, it yields a larger change in MAE and RMSE than that from 1000 to 2500. The best results yield when we use 0.1 training and full testing, with k over 5000...
+
+Below are some results for k(when the amount of the set of training and testing stays the same during testing):
+k-value MAE    RMSE
+100     1.3347 1.5837
+930     0.9476 1.1712
+
+We did not choose k to be extremely large during testing. Moreover, the result might fluctuate because of random sampling..
+
+Moreover, the two independent variables for the execution time are the size of training and testing data. An example is that when we set training to 0.01 and testing to 0.001, it only took minutes; but when running full data for both sets, it was difficult to finish. 
+
+
+Also, setting more "core" machines would improve the execution time. However, this approach has a limited effect, probably because of:
+1) Only a free-tier account is used. This would cause restrictions on more powerful instances. 
